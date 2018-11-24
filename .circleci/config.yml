@@ -28,6 +28,7 @@ jobs:
       - restore_cache:
           keys:
             - javascript-dependencies-{{ checksum "yarn.lock" }}
+            - static-assets
 
       - run:
           name: Build project
@@ -45,7 +46,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - static-assets-{{ checksum "index.html" }}
+            - static-assets
 
       - run:
           name: Config Github user
