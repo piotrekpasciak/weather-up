@@ -1,6 +1,24 @@
 version: 2.1
 
 jobs:
+  install:
+    docker:
+      - image: circleci/node:9.10
+    working_directory: ~/weather-up
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - javascript-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install dependencies
+          command: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: javascript-dependencies-{{ "yarn.lock" }}
+  
   build:
     docker:
       - image: circleci/node:9.10
@@ -9,24 +27,17 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - javascript-dependencies-{{ .Branch }}
-            - javascript-dependencies-{{ checksum "package-lock.json" }}
-            - javascript-dependencies
-
-      - run:
-          name: Install dependencies
-          command: npm install
+            - javascript-dependencies-{{ checksum "yarn.lock" }}
+            - javascript-dependencies-{{ checksum "index.html" }}
 
       - run:
           name: Build project
-          command: npm run release
-
+          command: yarn release
       - save_cache:
           paths:
-            - node_modules
             - dist
-          key: javascript-dependencies-{{ .Branch }}
-
+          key: javascript-dependencies-{{ "index.html" }}
+  
   deploy:
     docker:
       - image: circleci/node:8.10
@@ -35,8 +46,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - javascript-dependencies-{{ .Branch }}
-
+            - javascript-dependencies-{{ "index.html" }}
+  
       - run:
           name: Config Github user
           command: |
@@ -60,10 +71,16 @@ jobs:
 workflows:
   main:
     jobs:
+      - install:
+        filters:
+          branches:
+            only: master
       - build:
           filters:
             branches:
               only: master
+          requires:
+            - install
       - deploy:
           filters:
             branches:
