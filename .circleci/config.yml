@@ -36,7 +36,7 @@ jobs:
       - save_cache:
           paths:
             - dist
-          key: static-assets-{{ checksum "index.html" }}
+          key: static-assets-{{ checksum "dist/index.html" }}
 
   deploy:
     docker:
