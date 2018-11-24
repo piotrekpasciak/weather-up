@@ -1,6 +1,7 @@
 <template>
   <nav>
-    <tab />
+    <tab v-for="(tab, index) in tabs" :key="index" :tab="tab" />
+
     <add-tab />
   </nav>
 </template>
@@ -14,6 +15,11 @@ export default {
   components: {
     Tab,
     AddTab
+  },
+  computed: {
+    tabs() {
+      return this.$store.getters.getTabs
+    }
   }
 }
 </script>

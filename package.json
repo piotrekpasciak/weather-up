@@ -9,6 +9,8 @@
     "release": "BASE_URL=$BASE_URL npm run build"
   },
   "dependencies": {
+    "bootstrap-vue": "^2.0.0-rc.11",
+    "element-ui": "^2.4.11",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

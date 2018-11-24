@@ -1,12 +1,13 @@
 <template>
-  <nav>
-    Tab
-  </nav>
+  <div>
+    {{ tab }}
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Tab'
+  name: 'Tab',
+  props: ['tab']
 }
 </script>
 
