@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  install:
     docker:
       - image: circleci/node:9.10
     working_directory: ~/weather-up
@@ -17,16 +17,28 @@ jobs:
           name: Install dependencies
           command: npm install
 
-      - run:
-          name: Build project
-          command: npm run release
-
       - save_cache:
           paths:
             - node_modules
-            - dist
-          key: javascript-dependencies-{{ .Branch }}
+          key: javascript-dependencies-{{ "package-lock.json" }}
+  build:
+    docker:
+      - image: circleci/node:9.10
+    working_directory: ~/weather-up
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - javascript-dependencies-{{ checksum "package-lock.json" }}
+            - javascript-dependencies-{{ checksum "index.html" }}
 
+      - run:
+          name: Build project
+          command: npm run release
+      - save_cache:
+          paths:
+            - dist
+          key: javascript-dependencies-{{ "index.html" }}
   deploy:
     docker:
       - image: circleci/node:8.10
@@ -60,10 +72,16 @@ jobs:
 workflows:
   main:
     jobs:
+      - install:
+        filters:
+          branches:
+            only: master
       - build:
           filters:
             branches:
               only: master
+          requires:
+            - install
       - deploy:
           filters:
             branches:
