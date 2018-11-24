@@ -1,12 +1,22 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
+    <tabs />
+    <background />
+    <weather />
   </div>
 </template>
 
 <script>
+import Tabs from '@/components/Tabs'
+import Background from '@/components/Background'
+import Weather from '@/components/Weather'
+
 export default {
   name: 'home',
-  components: {}
+  components: {
+    Tabs,
+    Background,
+    Weather
+  }
 }
 </script>
