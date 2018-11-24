@@ -17,8 +17,8 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: javascript-dependencies-{{ "yarn.lock" }}
-  
+          key: javascript-dependencies-{{ checksum "yarn.lock" }}
+
   build:
     docker:
       - image: circleci/node:9.10
@@ -28,7 +28,7 @@ jobs:
       - restore_cache:
           keys:
             - javascript-dependencies-{{ checksum "yarn.lock" }}
-            - javascript-dependencies-{{ checksum "index.html" }}
+            - static-assets
 
       - run:
           name: Build project
@@ -36,8 +36,8 @@ jobs:
       - save_cache:
           paths:
             - dist
-          key: javascript-dependencies-{{ "index.html" }}
-  
+          key: static-assets-{{ checksum "index.html" }}
+
   deploy:
     docker:
       - image: circleci/node:8.10
@@ -46,8 +46,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - javascript-dependencies-{{ "index.html" }}
-  
+            - static-assets
+
       - run:
           name: Config Github user
           command: |
